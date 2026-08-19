@@ -1,0 +1,272 @@
+/* ==========================================================================
+   Niswas Nidra — UI refinement layer
+   Loaded AFTER main.css. Fixes layout/rhythm defects in the base template:
+     1. Header dropdown: fixed 220px width forced label wrapping
+     2. Footer: heading wrap misaligned column tops; ragged link rhythm
+     3. Footer logo cropped by object-fit:cover in a 128x44 box
+     4. Service cards: "Learn More" not bottom-anchored
+   Scoped to the two header variants in use:
+     index.html -> .homepage4-body (on <header>), all others -> .homepage1-body (on <body>)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. HEADER DROPDOWN
+   Base template pins .sub-menu to width:220px with 20px side padding, leaving
+   a 180px text column. At 18px type "Pulmonology & Sleep Services" and
+   "Interventional Pulmonology" wrap to two lines, and because the only
+   vertical spacing is padding-top:12px the wrapped rows read as tight pairs
+   separated by large gaps. Let the panel size to its content instead.
+   -------------------------------------------------------------------------- */
+
+:is(.homepage1-body, .homepage4-body) .vl-main-menu ul > li .sub-menu {
+  width: auto;
+  min-width: 252px;
+  max-width: 340px;
+  padding: 10px 0 12px;
+  border-radius: 12px;
+  box-shadow: 0 20px 44px rgba(7, 27, 52, 0.16);
+}
+
+:is(.homepage1-body, .homepage4-body) .vl-main-menu ul > li .sub-menu li a {
+  display: block;
+  padding: 11px 22px;
+  font-size: 16px;
+  line-height: 1.45;
+  white-space: nowrap;
+  border-radius: 0;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+/* Replace the half-width underline with a proper full-row menu affordance. */
+:is(.homepage1-body, .homepage4-body) .vl-main-menu ul > li .sub-menu li a::after {
+  display: none;
+}
+
+:is(.homepage1-body, .homepage4-body) .vl-main-menu ul > li .sub-menu li a:hover {
+  background: rgba(14, 159, 163, 0.09);
+  color: var(--prime-teal);
+}
+
+/* Nested flyout inherits the same sizing. */
+:is(.homepage1-body, .homepage4-body) .vl-main-menu ul > li .sub-menu li .sub-menu {
+  margin-left: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   2. FOOTER — COLUMN ALIGNMENT
+   "Specialist Services" wrapped to two lines at 24px/24px, pushing that
+   column's rule and list ~26px below "Quick Links" and "Contact Us".
+   Reclaim column width from the oversized left padding and set the heading
+   on a single line so all three columns start on the same baseline.
+   -------------------------------------------------------------------------- */
+
+.vl-footer4-section-area .footer-widget-area.foot-padding1 {
+  padding-left: 24px;
+}
+
+.vl-footer4-section-area .footer-widget-area.foot-padding2 {
+  padding-left: 0;
+}
+
+.vl-footer4-section-area .footer-widget-area h3 {
+  font-size: 20px;
+  line-height: 1.3;
+  white-space: nowrap;
+  padding-bottom: 14px;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   2b. FOOTER — LINK RHYTHM
+   Base sets line-height:16px (equal to font-size) with padding-top:24px, so a
+   wrapped item's two lines collide while the gap to the next item stays 24px.
+   Move the spacing onto the <li> and give the text real leading.
+   -------------------------------------------------------------------------- */
+
+.vl-footer4-section-area .footer-widget-area ul:not(.social-links) li {
+  margin-top: 15px;
+}
+
+.vl-footer4-section-area .footer-widget-area ul:not(.social-links) li:first-child {
+  margin-top: 0;
+}
+
+.vl-footer4-section-area .footer-widget-area ul:not(.social-links) li a {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding-top: 0;
+  line-height: 1.55;
+  opacity: 0.82;
+}
+
+/* Icons: stop the black brightness(0) filter and align them to the first line
+   of multi-line entries (the clinic address runs to four lines). */
+.vl-footer4-section-area .footer-widget-area ul:not(.social-links) li a svg {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 3px 0 0;
+  filter: none;
+  stroke: var(--prime-teal);
+}
+
+.vl-footer4-section-area .footer-widget-area ul:not(.social-links) li a svg path {
+  stroke: var(--prime-teal);
+}
+
+/* Hover shifted the whole flex row; keep it to colour only. */
+.vl-footer4-section-area .footer-widget-area.foot-padding1 ul li a:hover,
+.vl-footer4-section-area .footer-widget-area.foot-padding2 ul li a:hover {
+  padding-left: 0;
+}
+
+/* --------------------------------------------------------------------------
+   2c. FOOTER — LOGO
+   Base gives the mark width:200px/height:44px with object-fit:cover, which a
+   later layer narrows to 128px. The 669x373 source was therefore cropped to a
+   128x44 slot, showing only a sliver of the logo. Fit it instead of cropping.
+   -------------------------------------------------------------------------- */
+
+.vl-footer4-section-area .footer-description-area img {
+  width: auto;
+  height: auto;
+  max-width: 190px;
+  max-height: 78px;
+  object-fit: contain;
+  padding: 10px 14px;
+}
+
+/* Trim the 100px spacer above the copyright rule. */
+.vl-footer4-section-area .space100 {
+  height: 56px;
+}
+
+/* --------------------------------------------------------------------------
+   3. SERVICE CARDS
+   .content-area is flex:1 so the cards are already equal height and the
+   images align, but "Learn More" sits directly under the copy, so it lands at
+   a different height in every card. Anchor it to the bottom of the block.
+   -------------------------------------------------------------------------- */
+
+.service-inner-area .service4-boxarea .content-area,
+.service4-section-area .service4-slider-area .service4-boxarea .content-area {
+  display: flex;
+  flex-direction: column;
+}
+
+.service-inner-area .service4-boxarea .content-area .readmore,
+.service4-section-area .service4-slider-area .service4-boxarea .content-area .readmore {
+  margin-top: auto;
+}
+
+/* --------------------------------------------------------------------------
+   4. RESPONSIVE
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1199px) {
+  .vl-footer4-section-area .footer-widget-area h3 {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 991px) {
+  .vl-footer4-section-area .footer-widget-area.foot-padding1,
+  .vl-footer4-section-area .footer-widget-area.foot-padding2 {
+    padding-left: 0;
+  }
+
+  .vl-footer4-section-area .space100 {
+    height: 40px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. FOOTER — LEFTOVERS FROM THE REMOVED SUBSCRIBE FORM
+   The brand paragraph keeps a border-bottom that used to divide it from the
+   newsletter form; with that form commented out the rule dangles in space.
+   -------------------------------------------------------------------------- */
+
+.vl-footer4-section-area .footer-description-area p {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+/* Social buttons still carry the template's purple gradient; bring them onto
+   the teal brand palette and make the glyph legible. */
+.vl-footer4-section-area .footer-widget-area .social-links li a {
+  background: rgba(14, 159, 163, 0.10);
+  box-shadow: none;
+  color: var(--prime-teal);
+  line-height: 42px;
+}
+
+.vl-footer4-section-area .footer-widget-area .social-links li a:hover {
+  background: var(--prime-teal);
+  color: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   6. HEADER DROPDOWN — HOVER BRIDGE
+   .sub-menu is offset to top:201% of its <li>, which leaves ~86px of dead
+   space between the nav item and the panel. Crossing it drops :hover and the
+   menu starts closing under you. Bridge the gap with a transparent strip that
+   only exists while the panel is open (it inherits visibility:hidden).
+   -------------------------------------------------------------------------- */
+
+:is(.homepage1-body, .homepage4-body) .vl-main-menu ul > li .sub-menu::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -96px;
+  height: 96px;
+  background: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   7. FOOTER — ICONS IN THE CENTRED MOBILE LAYOUT
+   Below 992px the footer centres its columns. A flex row whose text wraps to
+   three lines fills the line box, so justify-content:center cannot pull the
+   icon in and it strands at the far left. Let the icon flow inline instead.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 991px) {
+  .vl-footer4-section-area .footer-widget-area ul:not(.social-links) li a {
+    display: inline;
+  }
+
+  .vl-footer4-section-area .footer-widget-area ul:not(.social-links) li a svg {
+    margin: 0 6px 0 0;
+    vertical-align: -3px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   8. INLINE LINK COLOUR
+   Inline links inside body copy fall back to the browser default blue. On the
+   dark CTA/emergency panel that lands at roughly 3:1 against the navy
+   background, and everywhere else it sits off the teal brand palette.
+   -------------------------------------------------------------------------- */
+
+.cta4-section-area .cta-content-area p a {
+  color: #6fdde0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.18s ease;
+}
+
+.cta4-section-area .cta-content-area p a:hover {
+  color: #ffffff;
+}
+
+.vl-footer4-section-area .footer-description-area p a {
+  color: var(--prime-teal);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.18s ease;
+}
+
+.vl-footer4-section-area .footer-description-area p a:hover {
+  color: var(--prime-navy);
+}
