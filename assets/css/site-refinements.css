@@ -270,3 +270,29 @@
 .vl-footer4-section-area .footer-description-area p a:hover {
   color: var(--prime-navy);
 }
+
+/* --------------------------------------------------------------------------
+   9. STICKY HEADER — DOUBLED BAR
+   The header is designed as a floating rounded pill (.row-bg1). On scroll the
+   sticky state additionally paints a full-width bar behind it: main.css:11663
+   adds a white background + 1px bottom hairline, and main.css:22207 layers a
+   second tinted background + shadow on top. The result reads as two stacked
+   headers. Keep the pill only; it already carries its own background, border,
+   shadow and backdrop blur.
+   -------------------------------------------------------------------------- */
+
+.homepage4-body .vl-header-area.header-sticky {
+  background: transparent;
+  border-bottom: 0;
+  box-shadow: none;
+}
+
+/* --------------------------------------------------------------------------
+   10. TESTIMONIAL SECTION — MISSING CLOSING TAG (fixed in index.html)
+   The CTA button used to sit flush against the section edge because
+   .testimonial4-section-area was never closed in the markup, so every later
+   section (including the footer) nested inside it and the section's own
+   bottom padding ended up at the foot of the document. The tag is now closed
+   in index.html, so the declared sp1 padding applies and no CSS patch is
+   needed here.
+   -------------------------------------------------------------------------- */
