@@ -1,59 +1,21 @@
 /* ==========================================================================
    Niswas Nidra — UI refinement layer
-   Loaded AFTER main.css. Fixes layout/rhythm defects in the base template:
-     1. Header dropdown: fixed 220px width forced label wrapping
-     2. Footer: heading wrap misaligned column tops; ragged link rhythm
-     3. Footer logo cropped by object-fit:cover in a 128x44 box
-     4. Service cards: "Learn More" not bottom-anchored
+   Loaded AFTER main.css. Corrects layout, rhythm and responsive defects that
+   the base template ships with. Each block below states the defect and the
+   rule in main.css that causes it, so a fix can be traced back to its source.
+
+   Sections 1-9   footer, service cards, sticky header, nav current-page state
+   Sections 10-16 benefit cards, process accordion, card imagery, testimonial
+                  attribution, CTA buttons, contact cards, qualification list
+   Sections 17-22 testimonials palette, mobile drawer stacking, CTA spacer
+                  column, text-only cards, header column sizing, image aspect
+
    Scoped to the two header variants in use:
      index.html -> .homepage4-body (on <header>), all others -> .homepage1-body (on <body>)
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   1. HEADER DROPDOWN
-   Base template pins .sub-menu to width:220px with 20px side padding, leaving
-   a 180px text column. At 18px type "Pulmonology & Sleep Services" and
-   "Interventional Pulmonology" wrap to two lines, and because the only
-   vertical spacing is padding-top:12px the wrapped rows read as tight pairs
-   separated by large gaps. Let the panel size to its content instead.
-   -------------------------------------------------------------------------- */
-
-:is(.homepage1-body, .homepage4-body) .vl-main-menu ul > li .sub-menu {
-  width: auto;
-  min-width: 252px;
-  max-width: 340px;
-  padding: 10px 0 12px;
-  border-radius: 12px;
-  box-shadow: 0 20px 44px rgba(7, 27, 52, 0.16);
-}
-
-:is(.homepage1-body, .homepage4-body) .vl-main-menu ul > li .sub-menu li a {
-  display: block;
-  padding: 11px 22px;
-  font-size: 16px;
-  line-height: 1.45;
-  white-space: nowrap;
-  border-radius: 0;
-  transition: background-color 0.18s ease, color 0.18s ease;
-}
-
-/* Replace the half-width underline with a proper full-row menu affordance. */
-:is(.homepage1-body, .homepage4-body) .vl-main-menu ul > li .sub-menu li a::after {
-  display: none;
-}
-
-:is(.homepage1-body, .homepage4-body) .vl-main-menu ul > li .sub-menu li a:hover {
-  background: rgba(14, 159, 163, 0.09);
-  color: var(--prime-teal);
-}
-
-/* Nested flyout inherits the same sizing. */
-:is(.homepage1-body, .homepage4-body) .vl-main-menu ul > li .sub-menu li .sub-menu {
-  margin-left: 2px;
-}
-
-/* --------------------------------------------------------------------------
-   2. FOOTER — COLUMN ALIGNMENT
+   1. FOOTER — COLUMN ALIGNMENT
    "Specialist Services" wrapped to two lines at 24px/24px, pushing that
    column's rule and list ~26px below "Quick Links" and "Contact Us".
    Reclaim column width from the oversized left padding and set the heading
@@ -143,7 +105,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   3. SERVICE CARDS
+   2. SERVICE CARDS
    .content-area is flex:1 so the cards are already equal height and the
    images align, but "Learn More" sits directly under the copy, so it lands at
    a different height in every card. Anchor it to the bottom of the block.
@@ -161,7 +123,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   4. RESPONSIVE
+   3. RESPONSIVE
    -------------------------------------------------------------------------- */
 
 @media (max-width: 1199px) {
@@ -182,7 +144,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   5. FOOTER — LEFTOVERS FROM THE REMOVED SUBSCRIBE FORM
+   4. FOOTER — LEFTOVERS FROM THE REMOVED SUBSCRIBE FORM
    The brand paragraph keeps a border-bottom that used to divide it from the
    newsletter form; with that form commented out the rule dangles in space.
    -------------------------------------------------------------------------- */
@@ -207,25 +169,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   6. HEADER DROPDOWN — HOVER BRIDGE
-   .sub-menu is offset to top:201% of its <li>, which leaves ~86px of dead
-   space between the nav item and the panel. Crossing it drops :hover and the
-   menu starts closing under you. Bridge the gap with a transparent strip that
-   only exists while the panel is open (it inherits visibility:hidden).
-   -------------------------------------------------------------------------- */
-
-:is(.homepage1-body, .homepage4-body) .vl-main-menu ul > li .sub-menu::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -96px;
-  height: 96px;
-  background: transparent;
-}
-
-/* --------------------------------------------------------------------------
-   7. FOOTER — ICONS IN THE CENTRED MOBILE LAYOUT
+   5. FOOTER — ICONS IN THE CENTRED MOBILE LAYOUT
    Below 992px the footer centres its columns. A flex row whose text wraps to
    three lines fills the line box, so justify-content:center cannot pull the
    icon in and it strands at the far left. Let the icon flow inline instead.
@@ -243,7 +187,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   8. INLINE LINK COLOUR
+   6. INLINE LINK COLOUR
    Inline links inside body copy fall back to the browser default blue. On the
    dark CTA/emergency panel that lands at roughly 3:1 against the navy
    background, and everywhere else it sits off the teal brand palette.
@@ -272,7 +216,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   9. STICKY HEADER — DOUBLED BAR
+   7. STICKY HEADER — DOUBLED BAR
    The header is designed as a floating rounded pill (.row-bg1). On scroll the
    sticky state additionally paints a full-width bar behind it: main.css:11663
    adds a white background + 1px bottom hairline, and main.css:22207 layers a
@@ -288,7 +232,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   10. TESTIMONIAL SECTION — MISSING CLOSING TAG (fixed in index.html)
+   8. TESTIMONIAL SECTION — MISSING CLOSING TAG (fixed in index.html)
    The CTA button used to sit flush against the section edge because
    .testimonial4-section-area was never closed in the markup, so every later
    section (including the footer) nested inside it and the section's own
@@ -296,3 +240,503 @@
    in index.html, so the declared sp1 padding applies and no CSS patch is
    needed here.
    -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+   9. NAV — CURRENT PAGE STATE
+   The base template ships no current-page indicator, so every page's header
+   looked identical and gave no sense of location. Nav markup now carries
+   .active on the link for the current page and .current-menu-item on its
+   top-level <li> (including the parent of an active dropdown child).
+   -------------------------------------------------------------------------- */
+
+:is(.homepage1-body, .homepage4-body) .vl-main-menu ul > li > a.active,
+:is(.homepage1-body, .homepage4-body) .vl-main-menu ul > li.current-menu-item > a {
+  color: var(--prime-teal);
+}
+
+:is(.homepage1-body, .homepage4-body) .vl-main-menu ul > li.current-menu-item > a::before {
+  /* The nav link carries ~31px of vertical padding, so an offset measured
+     from the box edge lands well clear of the text. Anchor to the text
+     instead: 50% is the text's vertical centre on every header variant. */
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: calc(50% + 0.75em);
+  height: 2px;
+  border-radius: 2px;
+  background: var(--prime-teal);
+}
+
+
+/* Offcanvas clone: the underline pseudo-element has no room in the stacked
+   mobile drawer, so carry the state with colour only. */
+.vl-offcanvas-menu nav ul > li.current-menu-item > a::before {
+  display: none;
+}
+
+.vl-offcanvas-menu nav ul li a.active,
+.vl-offcanvas-menu nav ul > li.current-menu-item > a {
+  color: var(--prime-teal);
+}
+
+/* --------------------------------------------------------------------------
+   10. BENEFIT CARDS — ICON / HEADING COLLISION
+   main.css:3039 leaves .icons at position:absolute and compensates with
+   .content-area{padding-left:100px}. Below 768px main.css:23456 zeroes that
+   padding to stack the card, but the icon is still out of flow, so every
+   heading printed straight over its own icon. Lay the card out as a real flex
+   row instead — the icon then reserves its own space at every width.
+   -------------------------------------------------------------------------- */
+
+.service-benefites-section-area .benefites-box .benefites-widget-boxarea {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.service-benefites-section-area .benefites-box .benefites-widget-boxarea .icons {
+  position: static;
+  flex: 0 0 auto;
+}
+
+.service-benefites-section-area .benefites-box .benefites-widget-boxarea .content-area {
+  padding-left: 0;
+  min-width: 0;
+}
+
+/* Two cards per row from 768px up leaves a ~145px text column beside an 80px
+   icon, which shreds the copy into three-word lines. Stack the icon above the
+   text until the cards are wide enough to carry both side by side. */
+@media (max-width: 991px) {
+  .service-benefites-section-area .benefites-box .benefites-widget-boxarea {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .service-benefites-section-area .benefites-box .benefites-widget-boxarea .content-area {
+    padding-top: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   11. PROCESS ACCORDION (.cs_case_study) — PERCENTAGE POSITIONING
+   Three defects, all from offsets measured in % of a panel whose width changes
+   with the viewport:
+     a) inactive .content-area is parked at left:-140%. At >=1400px that clears
+        the 203px panel; at 992-1199px the panel is only 143px wide, so ~50px of
+        the hidden copy and photo stayed visible inside the collapsed panel.
+     b) the rotated label sits at left:142%/width:170%/bottom:-160px. Its box
+        therefore drifts with panel width: centred at 1440px, off the left edge
+        (and clipped away entirely) by 1100px, and its vertical centre moves
+        with the length of the label text.
+     c) .cs_case_study is a hard height:750px with align-items:flex-end, so a
+        panel whose copy runs long (e.g. "Clear Explanation") pushed its own
+        number badge and heading above the top edge and had them clipped.
+   Fixes: hide the inactive panel instead of shoving it sideways, centre the
+   label with writing-mode, and let the photo absorb the leftover height.
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 992px) {
+  .works4-section-area .cs_case_study.cs_style_1 .content-area1 {
+    position: absolute;
+    inset: 0;
+  }
+
+  .works4-section-area .cs_case_study.cs_style_1 .content-area1 .text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 140px;
+    bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .works4-section-area .cs_case_study.cs_style_1 .content-area1 .text a {
+    position: static;
+    left: auto;
+    bottom: auto;
+    width: auto;
+    height: auto;
+    max-height: 100%;
+    transform: none;
+    writing-mode: vertical-rl;
+    rotate: 180deg;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .works4-section-area .cs_case_study.cs_style_1 .content-area {
+    left: 0;
+    width: 100%;
+    align-self: stretch;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(-24px);
+  }
+
+  .works4-section-area .cs_case_study.cs_style_1.active .content-area {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+  }
+
+  .works4-section-area .cs_case_study.cs_style_1 .content-area > *:not(.img1) {
+    flex: 0 0 auto;
+  }
+
+  .works4-section-area .cs_case_study.cs_style_1 .content-area .img1 {
+    flex: 1 1 auto;
+    min-height: 140px;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+
+  .works4-section-area .cs_case_study.cs_style_1 .content-area .img1 img {
+    display: block;
+    height: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   12. CARD IMAGERY — CONSISTENT CROP RATIO
+   The service, blog and gallery thumbnails were pinned to a different pixel
+   height at every breakpoint (260/245/230/220px) while their width was fluid,
+   so the crop applied by object-fit:cover changed as the window resized. Worse,
+   on the gallery and blog grids the base rule (.vl-blog-1-item .vl-blog-1-thumb
+   img{height:100%}) is one class more specific than the 250px override, so the
+   images kept their natural height and the three-column grid came out ragged —
+   cards in the same row ended 250px apart.
+   Pin the ratio instead of the height: 4:3 matches most of the source photos
+   exactly, and the crop is then identical at every viewport width.
+   -------------------------------------------------------------------------- */
+
+.service4-section-area .service4-slider-area .service4-boxarea .img1 img,
+.service-inner-area .service4-boxarea .img1 img,
+.vl-blog-4-area-inner .vl-blog-1-item .vl-blog-1-thumb img {
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+/* The homepage article row is illustrated with square clinic graphics, so it
+   gets a 1:1 slot — same principle, ratio chosen to suit the artwork. */
+.vl-blog-4-area .vl-blog-1-item .vl-blog-1-thumb img {
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+/* Equal-height cards so the caption/CTA rows line up across a grid row. */
+.vl-blog-4-area .vl-blog-1-item,
+.vl-blog-4-area-inner .vl-blog-1-item {
+  height: 100%;
+  margin-bottom: 0;
+}
+
+.vl-blog-4-area .vl-blog-1-item .vl-blog-1-content,
+.vl-blog-4-area-inner .vl-blog-1-item .vl-blog-1-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* "Learn More" was left sitting under the title, so it landed at a different
+   height in every card. Anchor it to the bottom, as on the service cards. */
+.vl-blog-4-area .vl-blog-1-item .vl-blog-1-content .vl-blog-1-icon {
+  margin-top: auto;
+}
+
+/* Category / caption chips still carried the base template's purple. */
+.vl-blog-4-area .vl-blog-1-item .vl-blog-1-content .vl-blog-meta ul li a,
+.vl-blog-4-area-inner .vl-blog-1-item .vl-blog-1-content .vl-blog-meta ul li a {
+  background: rgba(14, 159, 163, 0.1);
+  box-shadow: none;
+  padding: 7px 12px;
+}
+
+/* --------------------------------------------------------------------------
+   13. TESTIMONIAL ATTRIBUTION ROW
+   .text-area is a flex row, but the rating <ul> is a shrinkable block of
+   inline-block <li>s. Whenever the attribution ran to two lines the pill lost
+   width and the trailing "(4.5)" — sometimes the last star too — dropped onto a
+   second line, so no two cards rendered the rating the same way.
+   -------------------------------------------------------------------------- */
+
+.testimonial4-section-area .testimonial4-slider-area .testimonial4-boxarea .text-area,
+.testimonial-inner-area .testimonial4-boxarea .text-area {
+  gap: 14px;
+  align-items: center;
+}
+
+.testimonial4-section-area .testimonial4-slider-area .testimonial4-boxarea .text-area a,
+.testimonial-inner-area .testimonial4-boxarea .text-area a {
+  min-width: 0;
+}
+
+.testimonial4-section-area .testimonial4-slider-area .testimonial4-boxarea .text-area ul,
+.testimonial-inner-area .testimonial4-boxarea .text-area ul {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  padding: 7px 12px;
+  background: rgba(14, 159, 163, 0.08);
+  box-shadow: none;
+}
+
+@media (max-width: 575px) {
+  .testimonial4-section-area .testimonial4-slider-area .testimonial4-boxarea .text-area,
+  .testimonial-inner-area .testimonial4-boxarea .text-area {
+    flex-wrap: wrap;
+    row-gap: 12px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   14. CTA BUTTON PAIR
+   .btn-area1 spaces its buttons with gap, but the CTA phone link kept a
+   pre-flex margin-left:16px (main.css:19395). Whenever the pair wrapped — which
+   it does on the homepage at every width, because the label is long — the
+   second button sat 16px to the right of the first instead of aligning with it.
+   -------------------------------------------------------------------------- */
+
+.cta4-section-area .cta-content-area .btn-area1 .phone {
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   15. CONTACT INFO CARDS
+   min-height:190px was standing in for equal card heights and left 110-160px
+   of empty card under the shorter entries. Bootstrap's row already stretches
+   its columns, so height:100% equalises them with no dead space.
+   -------------------------------------------------------------------------- */
+
+.contact-inner-section-area .contact-single-boxarea2 .single-box {
+  min-height: 0;
+  height: 100%;
+}
+
+/* Below 768px the cards run one per row: the 64px icon plus its gutter leaves
+   a ~215px measure that breaks the clinic address into five short lines, and
+   matching heights would only pad the short cards. Stack the icon above the
+   text, as the benefit cards already do, and let each card size to its own
+   content. */
+@media (max-width: 767px) {
+  .contact-inner-section-area .contact-single-boxarea2 .single-box {
+    flex-direction: column;
+    gap: 14px;
+    height: auto;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   16. DOCTOR PROFILE — QUALIFICATION LIST
+   main.css:23195 gives .d-list li align-items/gap without ever setting
+   display:flex, so the list item stayed a block: the inline check icon sat on
+   the first line only and any wrapped text ran back to the left margin, under
+   the icon. Give it a real hanging indent that survives wrapping.
+   -------------------------------------------------------------------------- */
+
+.team-all-details-area .doctor-deatisl-content-area .d-list li {
+  padding-left: 30px;
+  text-indent: -30px;
+}
+
+.team-all-details-area .doctor-deatisl-content-area .d-list li img {
+  width: 20px;
+  height: 20px;
+  margin: 0 10px 0 0;
+  vertical-align: -4px;
+}
+
+/* text-indent is inherited, so the inline-block <span> would re-apply the
+   -30px to its own first line and print over the qualification. */
+.team-all-details-area .doctor-deatisl-content-area .d-list li span {
+  text-indent: 0;
+}
+
+@media (max-width: 575px) {
+  .team-all-details-area .doctor-deatisl-content-area .d-list li span {
+    padding-left: 8px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   17. TESTIMONIALS PAGE — BRAND PALETTE
+   The refinement layer recoloured the homepage testimonial slider (main.css:
+   22448) but not the .testimonial-inner-area grid used on testimonial.html, so
+   that page still showed the base template's lavender quote marks.
+   -------------------------------------------------------------------------- */
+
+.testimonial-inner-area .testimonial4-boxarea .icons {
+  background: var(--prime-mint);
+}
+
+.testimonial-inner-area .testimonial4-boxarea .icons svg path {
+  fill: var(--prime-teal);
+}
+
+/* --------------------------------------------------------------------------
+   18. MOBILE DRAWER — STACKING ORDER
+   .vl-offcanvas ships at z-index:99 and its backdrop at 50, but the floating
+   header pill sits at 999 (main.css:11552). With the drawer open the header
+   therefore painted over the top of it, hiding the drawer's own logo and — more
+   seriously — its close button, which sits in exactly that band. The only way
+   out of the menu was to guess that the dimmed backdrop was clickable.
+   Lift the drawer and its backdrop above the header (and above the
+   scroll-to-top control at 10000) so the close affordance is always reachable.
+   -------------------------------------------------------------------------- */
+
+:is(.homepage1-body, .homepage4-body) .vl-offcanvas-overlay,
+.vl-offcanvas-overlay {
+  z-index: 10001;
+}
+
+:is(.homepage1-body, .homepage4-body) .vl-offcanvas,
+.vl-offcanvas {
+  z-index: 10002;
+}
+
+/* --------------------------------------------------------------------------
+   19. CTA BAND — EMPTY SPACER COLUMN
+   The CTA row uses an empty <div class="col-lg-3"> to push the portrait right
+   on desktop. Once the row stacks it becomes a zero-height grid cell that still
+   collects the 30px row-gap on both sides, opening ~60px of dead space between
+   the buttons and the portrait. It has no job below lg.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 991px) {
+  .cta4-section-area .row > [class*="col-"]:empty {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   20. TEXT-ONLY SERVICE CARDS
+   .content-area carries min-height:190px so that image cards line up in a row.
+   The 404 page reuses the same card without a photo, where that floor is just
+   empty space under the copy.
+   -------------------------------------------------------------------------- */
+
+.service-inner-area .service4-boxarea:not(:has(.img1)) .content-area {
+  min-height: 0;
+}
+
+/* --------------------------------------------------------------------------
+   21. HEADER — COLUMN SIZING AND DESKTOP FIT
+   The header pill was a fixed 2/5/5 Bootstrap split. The logo filled only
+   ~90px of its 216px column and the CTAs ~440px of theirs, so the row opened
+   a dead white band on either side of the nav; and because the split was
+   fixed, the content could not be rebalanced when the nav grew. The seven
+   top-level links now in the bar would not have fitted at all.
+   Size all three columns to their content and let the nav take the slack, then
+   step the type down as the row narrows. Note the base rule that governs nav
+   links is .homepage4-body .vl-header-area .vl-main-menu ul li a (main.css:
+   11362) — an override that omits .vl-header-area loses to it on specificity
+   and silently does nothing.
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 992px) {
+  .homepage4-body .vl-header-area .row-bg1 {
+    flex-wrap: nowrap;
+    gap: 20px;
+  }
+
+  .homepage4-body .vl-header-area .row-bg1 > .col-lg-2,
+  .homepage4-body .vl-header-area .row-bg1 > .col-lg-5 {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: none;
+  }
+
+  .homepage4-body .vl-header-area .row-bg1 > .col-lg-5.d-none {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  /* Keep the seven links on one line and centred in whatever room is left. */
+  .homepage4-body .vl-main-menu nav > ul {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+  }
+
+  .homepage4-body .vl-hero-btn .btn-area1 {
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+
+  .homepage4-body .vl-hero-btn .phone,
+  .homepage4-body .vl-hero-btn .vl-btn4 {
+    white-space: nowrap;
+  }
+}
+
+/* Below 1280px the row cannot carry the nav and a spelled-out phone number.
+   The number is the cheapest thing to drop: it is repeated in the CTA band,
+   on the contact page and in the footer, and the glyph on its own is still a
+   one-tap call (the link carries an aria-label). */
+@media (min-width: 992px) and (max-width: 1279px) {
+  .homepage4-body .vl-hero-btn .phone .phone-label {
+    display: none;
+  }
+
+  .homepage4-body .vl-hero-btn .phone {
+    padding: 13px;
+  }
+
+  .homepage4-body .vl-header-area .vl-main-menu ul > li > a {
+    font-size: 16px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .homepage4-body .vl-hero-btn .vl-btn4 {
+    font-size: 15px;
+    padding: 12px 14px;
+  }
+}
+
+/* Narrowest desktop band — one more notch so the nav keeps clear air either
+   side rather than butting up against the logo and the CTAs. */
+@media (min-width: 992px) and (max-width: 1099px) {
+  .homepage4-body .vl-header-area .vl-main-menu ul > li > a {
+    font-size: 15px;
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+
+  .homepage4-body .vl-hero-btn .vl-btn4 {
+    font-size: 14px;
+    padding: 11px 13px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   22. IMAGE ASPECT — SQUARE BOXES AROUND NON-SQUARE ART
+   Two long-standing distortions, both from a fixed square box with no
+   object-fit: the benefit-card glyphs (main.css:3049 pins every icon to
+   50x50, but hero-icon2.svg is 0.76:1 and hero-icon3.svg 1.35:1, so they are
+   stretched/squashed by up to a third) and the decorative .elements12 blobs
+   (600x600 / 100%x100% boxes around a 0.93:1 source).
+   -------------------------------------------------------------------------- */
+
+.service-benefites-section-area .benefites-box .benefites-widget-boxarea .icons img,
+.elements12,
+.elements13,
+.elements14,
+.elements18,
+.elements28 {
+  object-fit: contain;
+}
