@@ -740,3 +740,168 @@
 .elements28 {
   object-fit: contain;
 }
+
+/* --------------------------------------------------------------------------
+   23. PRELOADER — BRANDED BREATHING MARK
+   The template shipped a generic two-tone ECG squiggle on a flat white field.
+   Replaced with the clinic's own seal: the mark breathes in and out while two
+   teal rings radiate from it, which is the site's own subject matter (breath
+   and sleep) rather than stock medical iconography.
+   Structure is unchanged from the template's (.cs_preloader / .cs_preloader_in),
+   so main.js:636 still fades it out on window load with no JS change.
+   -------------------------------------------------------------------------- */
+
+.cs_preloader {
+  flex-direction: column;
+  gap: 34px;
+  background:
+    radial-gradient(circle at 50% 42%, #ffffff 0%, var(--prime-mint) 58%, #e6f1f4 100%);
+}
+
+.cs_preloader .cs_preloader_in {
+  display: grid;
+  place-items: center;
+  width: 240px;
+  height: 240px;
+}
+
+/* Every child shares one grid cell, so the disc, the rings and the seal stay
+   concentric at any size without a single absolute offset. */
+.cs_preloader .cs_preloader_in > *,
+.cs_preloader .cs_preloader_in::before {
+  grid-area: 1 / 1;
+}
+
+/* Disc behind the seal — the mark's own interior is transparent, so it needs
+   a ground to read against the tinted backdrop. Breathes with the logo. */
+.cs_preloader .cs_preloader_in::before {
+  content: "";
+  width: 138px;
+  height: 138px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 18px 46px rgba(7, 27, 52, 0.1);
+  animation: nn-loader-breathe 3.2s ease-in-out infinite;
+}
+
+.cs_preloader .nn-loader-logo {
+  width: auto;
+  height: 132px;
+  animation: nn-loader-breathe 3.2s ease-in-out infinite;
+}
+
+.cs_preloader .nn-loader-ring {
+  width: 150px;
+  height: 150px;
+  border: 1px solid rgba(14, 159, 163, 0.6);
+  border-radius: 50%;
+  opacity: 0;
+  animation: nn-loader-radiate 3.2s ease-out infinite;
+}
+
+.cs_preloader .nn-loader-ring:nth-of-type(2) {
+  animation-delay: 1.6s;
+}
+
+.cs_preloader .nn-loader-bar {
+  width: 180px;
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(16, 45, 82, 0.12);
+  overflow: hidden;
+}
+
+.cs_preloader .nn-loader-bar span {
+  display: block;
+  width: 42%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--prime-teal), var(--prime-navy));
+  animation: nn-loader-sweep 1.25s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes nn-loader-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.055);
+  }
+}
+
+@keyframes nn-loader-radiate {
+  0% {
+    transform: scale(0.84);
+    opacity: 0;
+  }
+
+  18% {
+    opacity: 0.65;
+  }
+
+  100% {
+    transform: scale(1.72);
+    opacity: 0;
+  }
+}
+
+@keyframes nn-loader-sweep {
+  0% {
+    transform: translateX(-105%);
+  }
+
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+/* The global reduced-motion rule collapses every animation to its end frame,
+   which would leave the rings and the bar invisible. Give that path a static
+   composition instead. */
+@media (prefers-reduced-motion: reduce) {
+  .cs_preloader .nn-loader-ring {
+    opacity: 0.35;
+    transform: scale(1.28);
+  }
+
+  .cs_preloader .nn-loader-ring:nth-of-type(2) {
+    transform: scale(1.62);
+    opacity: 0.2;
+  }
+
+  .cs_preloader .nn-loader-bar span {
+    width: 100%;
+    transform: none;
+  }
+}
+
+@media (max-width: 575px) {
+  .cs_preloader {
+    gap: 28px;
+  }
+
+  .cs_preloader .cs_preloader_in {
+    width: 200px;
+    height: 200px;
+  }
+
+  .cs_preloader .cs_preloader_in::before {
+    width: 108px;
+    height: 108px;
+  }
+
+  .cs_preloader .nn-loader-logo {
+    height: 104px;
+  }
+
+  .cs_preloader .nn-loader-ring {
+    width: 118px;
+    height: 118px;
+  }
+
+  .cs_preloader .nn-loader-bar {
+    width: 150px;
+  }
+}
